@@ -6,54 +6,58 @@
     <title>ขอตังซื้อแว่นหน่อยค้าบบบ</title>
     <style>
         body {
-            background-color: black;
-            color: white;
+            background-color: #000000; /* พื้นหลังสีดำ */
             font-family: Arial, sans-serif;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
             text-align: center;
         }
-        .container {
-            padding: 20px;
-        }
         .title {
-            font-size: 30px;
-            margin-bottom: 20px;
+            font-size: 32px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        .subtitle {
+            font-size: 24px;
+            color: #FFA500; /* สีส้ม */
+            margin: 10px 0;
         }
         .phone-number {
-            font-size: 24px;
-            color: #00bfff; /* ฟ้าสำหรับเบอร์ทรูมันนี่ */
-            margin-bottom: 20px;
+            font-size: 28px;
+            color: #1E90FF; /* สีฟ้า */
+            margin: 10px 0;
         }
-        .copy-btn {
-            background-color: green;
-            color: white;
+        .copy-button {
+            background-color: #4CAF50; /* สีเขียว */
             border: none;
             padding: 10px 20px;
             font-size: 16px;
+            color: white;
+            border-radius: 30px;
             cursor: pointer;
+            margin-top: 10px;
         }
-        .copy-btn:active {
-            background-color: darkgreen;
+        .copy-button:active {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="title">บริจาคให้คนจะซื้อแว่น 😎</div>
-        <div class="title">!!เบอร์ทรูมันนี่!!</div>
-        <div class="phone-number" id="phone-number">0933375535</div>
-        <button class="copy-btn" id="copy-btn" onclick="copyNumber()">คัดลอกเบอร์</button>
-    </div>
-
+    <div class="title">😎 บริจาคให้คนจะซื้อแว่น 😎</div>
+    <div class="subtitle">!!เบอร์ทรูมันนี่!!</div>
+    <div class="phone-number" id="phone-number">0933375535</div>
+    <button class="copy-button" id="copy-btn" onclick="copyPhoneNumber()">คัดลอกเบอร์</button>
+    
     <script>
-        function copyNumber() {
-            var phoneNumber = document.getElementById('phone-number').innerText;
+        function copyPhoneNumber() {
+            var phoneNumber = document.getElementById("phone-number").innerText;
             navigator.clipboard.writeText(phoneNumber).then(function() {
-                document.getElementById('copy-btn').innerText = "ขอบคุณค้าบบบ";
-            }).catch(function(error) {
+                document.getElementById("copy-btn").innerText = "ขอบคุณค้าบบบ";
+            }, function() {
                 alert("ไม่สามารถคัดลอกได้");
             });
         }
