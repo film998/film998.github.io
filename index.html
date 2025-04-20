@@ -1,66 +1,47 @@
-<!DOCTYPE html>
-<html lang="th">
+<!DOCTYPE html><html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ขอตังซื้อแว่นหน่อยค้าบบบ</title>
-    <style>
-        body {
-            background-color: #000000; /* พื้นหลังสีดำ */
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
-        }
-        .title {
-            font-size: 32px;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-        .subtitle {
-            font-size: 24px;
-            color: #FFA500; /* สีส้ม */
-            margin: 10px 0;
-        }
-        .phone-number {
-            font-size: 28px;
-            color: #1E90FF; /* สีฟ้า */
-            margin: 10px 0;
-        }
-        .copy-button {
-            background-color: #4CAF50; /* สีเขียว */
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            color: white;
-            border-radius: 30px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .copy-button:active {
-            background-color: #45a049;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ขอตังซื้อแว่นหน่อยค้าบบบ</title>
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 100px;
+    }
+    .orange {
+      color: orange;
+      font-size: 1.2em;
+      margin-top: 20px;
+    }
+    .blue {
+      color: #00bfff;
+      font-size: 1.2em;
+      margin: 10px 0;
+    }
+    .copy-btn {
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 10px 20px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="title">ขอตังซื้อแว่นหน่อยค้าบบ</div>
-    <div class="subtitle">!!เบอร์ทรูมันนี่!!</div>
-    <div class="phone-number" id="phone-number">0933375535</div>
-    <button class="copy-button" id="copy-btn" onclick="copyPhoneNumber()">คัดลอกเบอร์</button>
-    
-    <script>
-        function copyPhoneNumber() {
-            var phoneNumber = document.getElementById("phone-number").innerText;
-            navigator.clipboard.writeText(phoneNumber).then(function() {
-                document.getElementById("copy-btn").innerText = "ขอบคุณค้าบบบ";
-            }, function() {
-                alert("ไม่สามารถคัดลอกได้");
-            });
-        }
-    </script>
-</body>
+  <h1>ขอตังซื้อแว่นหน่อยค้าบบบ</h1>
+  <div class="orange">!!เบอร์ทรูมันนี่!!</div>
+  <div class="blue" id="phone-number">0933375535</div>
+  <button class="copy-btn" onclick="copyAndRedirect()">คัดลอกเบอร์</button>  <script>
+    function copyAndRedirect() {
+      const number = document.getElementById('phone-number').textContent;
+      navigator.clipboard.writeText(number).then(() => {
+        window.location.href = 'https://tmn.app.link/send';
+      });
+    }
+  </script></body>
 </html>
