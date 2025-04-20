@@ -1,62 +1,62 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ขอตังซื้อแว่นหน่อยค้าบบบ</title>
-  <style>
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: sans-serif;
-      text-align: center;
-      padding: 50px 20px;
-    }
-    .title {
-      font-size: 1.8rem;
-      margin-bottom: 30px;
-    }
-    .orange {
-      color: orange;
-      font-size: 1.2rem;
-      margin-bottom: 10px;
-    }
-    .blue {
-      color: #00BFFF;
-      font-size: 1.2rem;
-      margin-bottom: 20px;
-    }
-    .copy-btn {
-      background-color: #00cc66;
-      color: #fff;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    .copy-btn.copied::after {
-      content: " ✅✅✅✅";
-      color: #00cc66;
-      margin-left: 10px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ขอตังซื้อแว่นหน่อยค้าบบบ</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        .title {
+            font-size: 30px;
+            margin-bottom: 20px;
+        }
+        .phone-number {
+            font-size: 24px;
+            color: #00bfff; /* ฟ้าสำหรับเบอร์ทรูมันนี่ */
+            margin-bottom: 20px;
+        }
+        .copy-btn {
+            background-color: green;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .copy-btn:active {
+            background-color: darkgreen;
+        }
+    </style>
 </head>
 <body>
-  <div class="title">😎 บริจาคให้คนจะซื้อแว่น 😎</div>
-  <div class="orange">!!เบอร์ทรูมันนี่!!</div>
-  <div class="blue" id="phone-number">0933375535</div>
-  <button class="copy-btn" id="copy-btn">คัดลอกเบอร์</button>
+    <div class="container">
+        <div class="title">บริจาคให้คนจะซื้อแว่น 😎</div>
+        <div class="title">!!เบอร์ทรูมันนี่!!</div>
+        <div class="phone-number" id="phone-number">0933375535</div>
+        <button class="copy-btn" id="copy-btn" onclick="copyNumber()">คัดลอกเบอร์</button>
+    </div>
 
-  <script>
-    const copyBtn = document.getElementById('copy-btn');
-    const phoneNumber = document.getElementById('phone-number').textContent;
-
-    copyBtn.addEventListener('click', () => {
-      navigator.clipboard.writeText(phoneNumber).then(() => {
-        copyBtn.classList.add('copied');
-      });
-    });
-  </script>
+    <script>
+        function copyNumber() {
+            var phoneNumber = document.getElementById('phone-number').innerText;
+            navigator.clipboard.writeText(phoneNumber).then(function() {
+                document.getElementById('copy-btn').innerText = "ขอบคุณค้าบบบ";
+            }).catch(function(error) {
+                alert("ไม่สามารถคัดลอกได้");
+            });
+        }
+    </script>
 </body>
 </html>
