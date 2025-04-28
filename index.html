@@ -1,8 +1,9 @@
-<!DOCTYPE html><html lang="th">
+<!DOCTYPE html>
+<html lang="th">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ขอตังซื้อแว่นหน่อยค้าบบบ</title>
+  <title>ช่วยผมซื้อโทรศัพท์เครื่องใหม่</title>
   <style>
     body {
       background-color: #000;
@@ -33,15 +34,18 @@
   </style>
 </head>
 <body>
-  <h1>ขอตังซื้อแว่นหน่อยค้าบบบ</h1>
+  <h1>ช่วยผมซื้อโทรศัพท์เครื่องใหม่</h1>
   <div class="orange">!!เบอร์ทรูมันนี่!!</div>
   <div class="blue" id="phone-number">0933375535</div>
-  <button class="copy-btn" onclick="copyAndRedirect()">คัดลอกเบอร์</button>  <script>
+  <button class="copy-btn" onclick="copyAndRedirect()">คัดลอกเบอร์</button>
+
+  <script>
     function copyAndRedirect() {
       const number = document.getElementById('phone-number').textContent;
       navigator.clipboard.writeText(number).then(() => {
         window.location.href = 'https://tmn.app.link/send';
       });
     }
-  </script></body>
+  </script>
+</body>
 </html>
