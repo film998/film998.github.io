@@ -1,145 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pong Bot</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pong Bot Mobile + Timer + Smart Bot</title>
   <style>
-    html, body {
-      margin: 0;
-      overflow: hidden;
-      background: #000;
-      touch-action: manipulation;
-    }
-    canvas {
-      display: block;
-      background: #111;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { overflow: hidden; background: black; }
+    canvas { background: black; display: block; margin: 0 auto; touch-action: none; }
     #restart {
       position: absolute;
-      top: 50%;
-      left: 50%;
+      top: 50%; left: 50%;
       transform: translate(-50%, -50%);
-      font-size: 24px;
-      padding: 16px 24px;
-      background: white;
-      border: none;
-      border-radius: 12px;
+      padding: 15px 30px;
+      font-size: 20px;
       display: none;
+      z-index: 3;
+      cursor: pointer;
+    }
+    #timer {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 24px;
+      font-family: monospace;
       z-index: 2;
+      user-select: none;
+      pointer-events: none;
     }
   </style>
 </head>
 <body>
-<canvas id="game"></canvas>
-<button id="restart">เล่นใหม่</button>
+  <div id="timer">เวลา: 00:00</div>
+  <button id="restart">เล่นใหม่</button>
+  <audio id="blip" src="https://freesound.org/data/previews/341/341695_5260877-lq.mp3"></audio>
+  <canvas id="gameCanvas" width="800" height="500"></canvas>
 
-<script>
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
-const restartBtn = document.getElementById("restart");
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const restartBtn = document.getElementById('restart');
+    const blip = document.getElementById('blip');
+    const timerDiv = document.getElementById('timer');
 
-let width = window.innerWidth;
-let height = window.innerHeight;
-canvas.width = width;
-canvas.height = height;
+    const paddleWidth = 10, paddleHeight = 100;
+    let playerY = 200, botY = 200;
+    let ball, gameOver = false;
 
-let paddleHeight = height * 0.2;
-let paddleWidth = 10;
-let ballSize = 12;
+    // Timer vars
+    let startTime = 0;
+    let timerInterval = null;
 
-let playerY = (height - paddleHeight) / 2;
-let botY = (height - paddleHeight) / 2;
-let ballX = width / 2, ballY = height / 2;
-let ballVX = -5, ballVY = 3;
+    function updateTimer() {
+      const now = Date.now();
+      const elapsed = Math.floor((now - startTime) / 1000);
+      const minutes = String(Math.floor(elapsed / 60)).padStart(2, '0');
+      const seconds = String(elapsed % 60).padStart(2, '0');
+      timerDiv.textContent = `เวลา: ${minutes}:${seconds}`;
+    }
 
-let gameOver = false;
+    function resetGame() {
+      playerY = botY = 200;
+      ball = { x: 400, y: 250, size: 15, vx: -5, vy: 3 };
+      gameOver = false;
+      restartBtn.style.display = 'none';
 
-function resetGame() {
-  ballX = width / 2;
-  ballY = height / 2;
-  ballVX = -5;
-  ballVY = 3;
-  gameOver = false;
-  restartBtn.style.display = "none";
-  loop();
-}
+      startTime = Date.now();
+      clearInterval(timerInterval);
+      timerInterval = setInterval(updateTimer, 1000);
+      updateTimer();
 
-function draw() {
-  ctx.clearRect(0, 0, width, height);
+      requestAnimationFrame(gameLoop);
+    }
 
-  // Player
-  ctx.fillStyle = "white";
-  ctx.fillRect(width - paddleWidth - 10, playerY, paddleWidth, paddleHeight);
+    function drawRect(x, y, w, h, color) {
+      ctx.fillStyle = color;
+      ctx.fillRect(x, y, w, h);
+    }
 
-  // Bot
-  ctx.fillRect(10, botY, paddleWidth, paddleHeight);
+    function drawCircle(x, y, r, color) {
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    }
 
-  // Ball
-  ctx.beginPath();
-  ctx.arc(ballX, ballY, ballSize, 0, Math.PI * 2);
-  ctx.fill();
+    function playSound() {
+      blip.currentTime = 0;
+      blip.play();
+    }
 
-  // Center line
-  ctx.strokeStyle = "gray";
-  ctx.setLineDash([10, 10]);
-  ctx.beginPath();
-  ctx.moveTo(width / 2, 0);
-  ctx.lineTo(width / 2, height);
-  ctx.stroke();
-}
+    function increaseSpeed() {
+      const maxSpeed = 15;
+      const speedMultiplier = 1.05;
+      const newVX = ball.vx * speedMultiplier;
+      const newVY = ball.vy * speedMultiplier;
+      ball.vx = Math.sign(newVX) * Math.min(Math.abs(newVX), maxSpeed);
+      ball.vy = Math.sign(newVY) * Math.min(Math.abs(newVY), maxSpeed);
+    }
 
-function update() {
-  // Ball movement
-  ballX += ballVX;
-  ballY += ballVY;
+    function gameLoop() {
+      if (gameOver) return;
 
-  // Wall bounce
-  if (ballY < ballSize || ballY > height - ballSize) ballVY *= -1;
+      // update ball position
+      ball.x += ball.vx;
+      ball.y += ball.vy;
 
-  // Bot AI
-  let botCenter = botY + paddleHeight / 2;
-  if (botCenter < ballY - 10) botY += 4;
-  else if (botCenter > ballY + 10) botY -= 4;
+      // bounce top/bottom
+      if (ball.y <= 0 || ball.y + ball.size >= canvas.height) {
+        ball.vy *= -1;
+        playSound();
+      }
 
-  // Player paddle clamp
-  if (playerY < 0) playerY = 0;
-  if (playerY + paddleHeight > height) playerY = height - paddleHeight;
+      // bot AI (ปรับความเร็วตามบอล)
+      const botSpeedBase = 3;
+      const botSpeedMax = 12;
+      let speedFactor = Math.min(Math.abs(ball.vx) / 5, 1); // 0 ถึง 1
+      let botSpeed = botSpeedBase + (botSpeedMax - botSpeedBase) * speedFactor;
 
-  // Ball collision with paddles
-  if (ballX - ballSize < 20 + paddleWidth && ballY > botY && ballY < botY + paddleHeight) {
-    ballVX *= -1.1;
-    ballX = 20 + paddleWidth + ballSize;
-  }
+      let botCenter = botY + paddleHeight / 2;
+      if (botCenter < ball.y) botY += botSpeed;
+      else if (botCenter > ball.y) botY -= botSpeed;
 
-  if (ballX + ballSize > width - 20 - paddleWidth && ballY > playerY && ballY < playerY + paddleHeight) {
-    ballVX *= -1.1;
-    ballX = width - 20 - paddleWidth - ballSize;
-  }
+      if (botY < 0) botY = 0;
+      if (botY + paddleHeight > canvas.height) botY = canvas.height - paddleHeight;
 
-  // Check game over
-  if (ballX < 0 || ballX > width) {
-    gameOver = true;
-    restartBtn.style.display = "block";
-  }
-}
+      // collision with bot paddle
+      if (
+        ball.x <= 20 &&
+        ball.y + ball.size >= botY &&
+        ball.y <= botY + paddleHeight
+      ) {
+        ball.vx *= -1;
+        playSound();
+        increaseSpeed();
+      }
 
-function loop() {
-  if (!gameOver) {
-    update();
-    draw();
-    requestAnimationFrame(loop);
-  }
-}
+      // collision with player paddle
+      if (
+        ball.x + ball.size >= canvas.width - 20 &&
+        ball.y + ball.size >= playerY &&
+        ball.y <= playerY + paddleHeight
+      ) {
+        ball.vx *= -1;
+        playSound();
+        increaseSpeed();
+      }
 
-canvas.addEventListener("touchstart", (e) => {
-  const x = e.touches[0].clientX;
-  if (x < width / 2) playerY -= 30;
-  else playerY += 30;
-});
+      // check game over
+      if (ball.x < 0 || ball.x > canvas.width) {
+        gameOver = true;
+        restartBtn.style.display = 'block';
+        clearInterval(timerInterval);
+        return;
+      }
 
-restartBtn.addEventListener("click", resetGame);
+      // draw everything
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawRect(0, botY, paddleWidth, paddleHeight, 'white');
+      drawRect(canvas.width - paddleWidth, playerY, paddleWidth, paddleHeight, 'white');
+      drawCircle(ball.x, ball.y, ball.size, 'white');
 
-loop();
-</script>
+      requestAnimationFrame(gameLoop);
+    }
+
+    // touch control - ลากนิ้วฝั่งขวาบังคับ player paddle
+    canvas.addEventListener('touchmove', (e) => {
+      const touch = e.touches[0];
+      const rect = canvas.getBoundingClientRect();
+      const x = touch.clientX - rect.left;
+
+      if (x > canvas.width * 0.6) {
+        const y = touch.clientY - rect.top;
+        playerY = y - paddleHeight / 2;
+        if (playerY < 0) playerY = 0;
+        if (playerY + paddleHeight > canvas.height)
+          playerY = canvas.height - paddleHeight;
+      }
+      e.preventDefault();
+    }, { passive: false });
+
+    restartBtn.addEventListener('click', resetGame);
+
+    resetGame();
+  </script>
 </body>
 </html>
