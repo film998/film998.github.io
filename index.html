@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
   <meta charset="UTF-8">
-  <title>เว็บนับแต้ม</title>
+  <title>นับแต้ม</title>
   <style>
     :root {
       --bg: #f8f9fa;
@@ -61,7 +61,7 @@
       position: fixed;
       top: 0;
       left: 0;
-      width: 260px;
+      width: 280px;
       height: 100%;
       background: #333;
       color: white;
@@ -88,14 +88,13 @@
       margin: 15px 0 5px;
     }
 
-    .sidebar select {
+    .sidebar input[type="text"] {
       width: 100%;
-      font-size: 1em;
       padding: 10px;
-      border-radius: var(--border-radius);
+      border-radius: 10px;
       border: none;
-      background: #555;
-      color: white;
+      margin-bottom: 20px;
+      font-size: 1em;
     }
 
     .sidebar button {
@@ -104,10 +103,33 @@
       width: 100%;
       padding: 12px;
       border: none;
-      margin-top: 30px;
+      margin-top: 20px;
       border-radius: var(--border-radius);
       font-size: 1em;
       cursor: pointer;
+    }
+
+    .name-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .name-picker button {
+      flex: 1 1 30%;
+      padding: 8px;
+      border: none;
+      border-radius: 10px;
+      background: #666;
+      color: white;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .name-picker button.active {
+      background: var(--accent);
+      font-weight: bold;
     }
 
     .container {
@@ -116,7 +138,6 @@
       align-items: center;
       padding: 20px;
       height: 100vh;
-      transition: flex-direction 0.3s ease;
       gap: 20px;
     }
 
@@ -134,7 +155,11 @@
       font-size: 4em;
       margin: 20px 0;
       font-weight: bold;
+      color: var(--text);
     }
+
+    .score.yellow { color: #fbc02d; }
+    .score.red { color: #e53935; }
 
     .action {
       font-size: 1.2em;
@@ -168,31 +193,15 @@
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
 
   <div class="sidebar" id="sidebar">
-    <h3>ตั้งค่า</h3>
+    <h3>ตั้งค่าชื่อผู้เล่น</h3>
 
     <label>ชื่อฝั่งซ้าย/บน:</label>
-    <select id="selectLeft" onchange="updateName('left')">
-      <option value="เรด">เรด</option>
-      <option value="บอล">บอล</option>
-      <option value="ขิม">ขิม</option>
-      <option value="ฟิล์ม">ฟิล์ม</option>
-      <option value="ดิว">ดิว</option>
-      <option value="ปัง">ปัง</option>
-      <option value="นิรนาม1">นิรนาม1</option>
-      <option value="นิรนาม2">นิรนาม2</option>
-    </select>
+    <div class="name-picker" id="nameLeft"></div>
+    <input type="text" id="customLeft" placeholder="ใส่ชื่อเอง..." oninput="setCustomName('left')">
 
     <label>ชื่อฝั่งขวา/ล่าง:</label>
-    <select id="selectRight" onchange="updateName('right')">
-      <option value="เรด">เรด</option>
-      <option value="บอล">บอล</option>
-      <option value="ขิม">ขิม</option>
-      <option value="ฟิล์ม">ฟิล์ม</option>
-      <option value="ดิว">ดิว</option>
-      <option value="ปัง">ปัง</option>
-      <option value="นิรนาม1">นิรนาม1</option>
-      <option value="นิรนาม2">นิรนาม2</option>
-    </select>
+    <div class="name-picker" id="nameRight"></div>
+    <input type="text" id="customRight" placeholder="ใส่ชื่อเอง..." oninput="setCustomName('right')">
 
     <button onclick="toggleTheme()">🌗 เปลี่ยนธีม</button>
   </div>
@@ -219,6 +228,8 @@
     let scoreLeft = 0;
     let scoreRight = 0;
 
+    const names = ["เรด", "บอล", "ขิม", "ฟิล์ม", "ดิว", "ปัง", "นิรนาม1", "นิรนาม2"];
+
     function toggleMenu() {
       document.getElementById('sidebar').classList.toggle('open');
     }
@@ -231,9 +242,11 @@
       if (side === 'left') {
         scoreLeft += amount;
         document.getElementById('scoreLeft').innerText = scoreLeft;
+        updateScoreColor('left', scoreLeft);
       } else {
         scoreRight += amount;
         document.getElementById('scoreRight').innerText = scoreRight;
+        updateScoreColor('right', scoreRight);
       }
     }
 
@@ -241,16 +254,51 @@
       if (side === 'left') {
         scoreLeft = 0;
         document.getElementById('scoreLeft').innerText = scoreLeft;
+        updateScoreColor('left', scoreLeft);
       } else {
         scoreRight = 0;
         document.getElementById('scoreRight').innerText = scoreRight;
+        updateScoreColor('right', scoreRight);
       }
     }
 
-    function updateName(side) {
-      const name = document.getElementById(side === 'left' ? 'selectLeft' : 'selectRight').value;
-      document.getElementById(side === 'left' ? 'leftName' : 'rightName').textContent = name;
+    function updateScoreColor(side, score) {
+      const el = document.getElementById(`score${capitalize(side)}`);
+      el.classList.remove("yellow", "red");
+      if (score >= 15) el.classList.add("red");
+      else if (score >= 5) el.classList.add("yellow");
     }
+
+    function createNameButtons(side) {
+      const container = document.getElementById(`name${capitalize(side)}`);
+      container.innerHTML = "";
+      names.forEach(name => {
+        const btn = document.createElement("button");
+        btn.textContent = name;
+        btn.onclick = () => {
+          document.getElementById(`${side}Name`).textContent = name;
+          document.getElementById(`custom${capitalize(side)}`).value = "";
+          Array.from(container.children).forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    function setCustomName(side) {
+      const value = document.getElementById(`custom${capitalize(side)}`).value.trim();
+      if (value) {
+        document.getElementById(`${side}Name`).textContent = value;
+        Array.from(document.getElementById(`name${capitalize(side)}`).children).forEach(b => b.classList.remove("active"));
+      }
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
+    createNameButtons("left");
+    createNameButtons("right");
   </script>
 
 </body>
