@@ -14,7 +14,6 @@
       --btn-reset: #6c757d;
       --border-radius: 16px;
     }
-
     body.dark {
       --bg: #121212;
       --text: #f1f1f1;
@@ -189,12 +188,10 @@
   </style>
 </head>
 <body>
-
   <button class="menu-btn" onclick="toggleMenu()">☰</button>
 
   <div class="sidebar" id="sidebar">
     <h3>ตั้งค่าชื่อผู้เล่น</h3>
-
     <label>ชื่อฝั่งซ้าย/บน:</label>
     <div class="name-picker" id="nameLeft"></div>
     <input type="text" id="customLeft" placeholder="ใส่ชื่อเอง..." oninput="setCustomName('left')">
@@ -214,7 +211,6 @@
       <button class="action minus" onclick="changeScore('left', -1)">-1</button>
       <button class="action reset" onclick="resetScore('left')">รีเซ็ต</button>
     </div>
-
     <div class="player">
       <h2 id="rightName">บอล</h2>
       <div class="score" id="scoreRight">0</div>
@@ -241,10 +237,12 @@
     function changeScore(side, amount) {
       if (side === 'left') {
         scoreLeft += amount;
+        if(scoreLeft < 0) scoreLeft = 0;
         document.getElementById('scoreLeft').innerText = scoreLeft;
         updateScoreColor('left', scoreLeft);
       } else {
         scoreRight += amount;
+        if(scoreRight < 0) scoreRight = 0;
         document.getElementById('scoreRight').innerText = scoreRight;
         updateScoreColor('right', scoreRight);
       }
@@ -265,7 +263,7 @@
     function updateScoreColor(side, score) {
       const el = document.getElementById(`score${capitalize(side)}`);
       el.classList.remove("yellow", "red");
-      if (score >= 15) el.classList.add("red");
+      if (score >= 10) el.classList.add("red"); // แก้ตรงนี้จาก 15 เป็น 10
       else if (score >= 5) el.classList.add("yellow");
     }
 
@@ -300,6 +298,5 @@
     createNameButtons("left");
     createNameButtons("right");
   </script>
-
 </body>
 </html>
