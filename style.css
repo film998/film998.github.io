@@ -1,0 +1,113 @@
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background: #000;
+  color: #fff;
+  user-select: none;
+  overflow: hidden;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 40px;
+  height: 60vh;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.name {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.score {
+  font-size: 6rem;
+  margin: 10px 0;
+  transition: 0.3s;
+}
+
+.score.yellow {
+  color: yellow;
+}
+
+.score.red {
+  color: red;
+}
+
+button {
+  font-size: 1.2rem;
+  padding: 10px 20px;
+  margin: 5px;
+  background: #444;
+  color: white;
+  border: none;
+  border-radius: 10px;
+}
+
+.controls {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(20, 20, 20, 0.95);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.selector-container {
+  background: #111;
+  padding: 30px;
+  border-radius: 15px;
+  text-align: center;
+}
+
+.players-row {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  margin: 20px 0;
+  flex-wrap: wrap;
+}
+
+.players-row div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+select,
+input {
+  margin-top: 10px;
+  font-size: 1rem;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: none;
+}
+
+@media (orientation: landscape) {
+  .players-row {
+    justify-content: space-between;
+  }
+
+  .players-row div:first-child {
+    align-items: flex-start;
+  }
+
+  .players-row div:last-child {
+    align-items: flex-end;
+  }
+}
