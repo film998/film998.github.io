@@ -3,202 +3,200 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Happy New Year 2026</title>
+<title>จดหมายปีใหม่</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Itim&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@300;400;600&display=swap" rel="stylesheet">
 
 <style>
-*{box-sizing:border-box}
+*{
+    box-sizing:border-box;
+    font-family:'Mali', cursive;
+}
 
 body{
     margin:0;
     min-height:100vh;
-    font-family:'Itim',cursive;
-    background:linear-gradient(135deg,#fdfbfb,#f5f0ff);
-    display:flex;
-    justify-content:center;
-    align-items:center;
+    background:linear-gradient(135deg,#ffe4ec,#fff0f5);
     overflow:hidden;
-    color:#4a3f55;
 }
 
-/* Envelope */
-.envelope-container{text-align:center}
-.envelope{
-    width:320px;
-    height:200px;
-    position:relative;
-    perspective:1000px;
+/* ===== Hearts ===== */
+.heart{
+    position:fixed;
+    top:-10px;
+    font-size:20px;
+    opacity:.6;
+    animation:fall linear forwards;
+    pointer-events:none;
+    z-index:1;
 }
-.envelope-body{
-    width:100%;
-    height:100%;
-    background:#fff;
-    border-radius:16px;
-    box-shadow:0 15px 30px rgba(0,0,0,.1);
-    position:absolute;
-    bottom:0;
+@keyframes fall{
+    to{
+        transform:translateY(110vh) rotate(360deg);
+    }
 }
-.flap{
-    width:100%;
-    height:100%;
-    background:#f0eaff;
-    clip-path:polygon(0 0,100% 0,50% 55%);
+
+/* ===== Envelope ===== */
+.envelope-container{
     position:absolute;
-    top:0;
-    left:0;
-    transform-origin:top;
-    transition:transform 1s ease;
-    border-radius:16px;
-}
-.seal{
-    position:absolute;
-    bottom:35px;
-    left:50%;
-    transform:translateX(-50%);
-    width:60px;
-    height:60px;
-    background:#fff;
-    border-radius:50%;
+    inset:0;
     display:flex;
-    justify-content:center;
     align-items:center;
-    font-size:2rem;
-    cursor:pointer;
-    box-shadow:0 8px 16px rgba(0,0,0,.15);
-    transition:.4s;
-    z-index:5;
+    justify-content:center;
+    z-index:3;
+    transition:opacity .6s ease;
 }
-.seal:hover{transform:translateX(-50%) scale(1.1)}
-.tap-text{margin-top:20px;color:#7a5cff}
-
-/* Letter */
-.card{
-    position:absolute;
-    bottom:-130%;
+.envelope-container.hide{
     opacity:0;
-    background:rgba(255,255,255,.95);
-    max-width:900px;
-    width:90%;
-    padding:40px 30px;
-    border-radius:24px;
-    box-shadow:0 20px 40px rgba(0,0,0,.08);
-    transition:all 1.2s ease;
+    pointer-events:none;
 }
-.card.show{bottom:5%;opacity:1}
 
-h1{text-align:center;color:#7a5cff;font-size:2.4rem}
-h2{text-align:center;font-weight:normal;color:#9a89b8;margin-bottom:30px}
-p{line-height:1.9;font-size:1.05rem;margin-bottom:18px}
-.highlight{color:#7a5cff;font-weight:bold}
-.footer{text-align:center;margin-top:30px}
+.envelope{
+    width:260px;
+    height:180px;
+    background:#fff;
+    border-radius:12px;
+    box-shadow:0 20px 40px rgba(0,0,0,.1);
+    position:relative;
+    cursor:pointer;
+}
 
-/* open state */
-.open .flap{transform:rotateX(-180deg)}
-.open .seal{transform:translateX(-50%) scale(0);opacity:0}
+.stamp{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:48px;
+}
+
+/* ===== Blur Background ===== */
+#blurBg{
+    position:fixed;
+    inset:0;
+    background:rgba(255,192,203,.25);
+    backdrop-filter:blur(12px);
+    -webkit-backdrop-filter:blur(12px);
+    opacity:0;
+    transition:opacity .8s ease;
+    z-index:5;
+    pointer-events:none;
+}
+#blurBg.show{opacity:1}
+
+/* ===== Letter Fullscreen ===== */
+.card{
+    position:fixed;
+    inset:0;
+    background:rgba(255,255,255,.97);
+    padding:40px 24px;
+    overflow-y:auto;
+    opacity:0;
+    transition:opacity 1s ease;
+    z-index:10;
+}
+.card.show{opacity:1}
+
+.card h2{
+    text-align:center;
+    margin-bottom:20px;
+}
+
+.card p{
+    line-height:1.9;
+    margin-bottom:18px;
+    font-size:17px;
+}
 </style>
 </head>
+
 <body>
 
-<!-- YouTube music (loop) -->
-<iframe id="yt"
-src="https://www.youtube.com/embed/7as_BTOh-Lg?controls=0&modestbranding=1&loop=1&playlist=7as_BTOh-Lg"
-style="display:none"></iframe>
+<!-- Blur -->
+<div id="blurBg"></div>
 
-<div class="envelope-container" id="envelopeBox">
+<!-- Envelope -->
+<div class="envelope-container" id="envelopeBox" onclick="openLetter()">
     <div class="envelope">
-        <div class="flap"></div>
-        <div class="envelope-body"></div>
-        <div class="seal" onclick="openLetter()">🐷</div>
+        <div class="stamp">🐷</div>
     </div>
-    <div class="tap-text">แตะตราประทับเพื่อเปิดจดหมาย</div>
 </div>
 
+<!-- Letter -->
 <div class="card" id="letter">
-<h1>สำหรับปีใหม่ 💜</h1>
-<h2>ถึงคนสำคัญที่สุดของเค้า</h2>
+<h2>💌 ถึงคนพิเศษของเค้า</h2>
 
-<p>สำหรับปีใหม่ถึงจะไม่ใช่คำอวยพรแต่ก็เป็นคำที่อยากบอกมากๆเลยนะ</p>
+<p>สำหรับปีใหม่ ถึงจะไม่ใช่คำอวยพร แต่ก็เป็นคำที่อยากบอกมาก ๆ เลยนะ</p>
 
 <p>
-ขอบคุณมากๆเลยนะที่เข้ามาในชีวิตเค้าเกือบจะ 2 ปีแล้วนะที่เรารู้จักกัน  
-เป็นเกือบ 2 ปีที่เค้ามีความสุขมากๆเลยตั้งแต่เป็นเพื่อนเล่นกันจนถึงตอนนี้
+ขอบคุณมาก ๆ เลยนะที่เข้ามาในชีวิตเค้า เกือบจะ 2 ปีแล้วที่เรารู้จักกัน  
+เป็นเกือบ 2 ปีที่เค้ามีความสุขมาก ๆ ตั้งแต่เป็นเพื่อนเล่นกันจนถึงตอนนี้  
+เค้ามีความสุขที่สุดเลยเวลาที่เธอยิ้ม เธอหัวเราะ
 </p>
 
 <p>
-เค้ามีความสุขที่สุดเลยเวลาที่เธอยิ้ม เธอหัวเราะ  
-เค้ามีความสุขมากๆที่ได้เล่นกับเธอทุกครั้ง  
-ขอบคุณนะที่ยังคอยอยู่ข้างกันตั้งแต่ตอนที่เพิ่งจะรู้จักกันจนถึงในตอนนี้
+ขอบคุณนะที่ยังคอยอยู่ข้างกัน ตั้งแต่ตอนที่เพิ่งจะรู้จักกันจนถึงตอนนี้  
+ขอบคุณมากเลยนะที่เข้ามาในตอนที่เค้าตันไปทุกด้าน  
+เธอเหมือนหิ่งห้อยตัวน้อย ถึงจะไม่สว่างมาก แต่ก็นำทางเค้าออกมาจากเหวได้ทุกครั้ง
 </p>
 
 <p>
-ขอบคุณมากๆเลยนะที่เข้ามาหากันในตอนที่เค้าตันไปทุกด้าน  
-แต่เธอก็เป็นหิ่งห้อยตัวน้อย  
-ถึงจะไม่สว่างมากแต่ก็นำทางเค้าออกมาจากเหวนั้นได้
-</p>
-
-<p>
-ทุกครั้งที่เค้าร้องไห้เพราะเธอ  
-เค้าไม่ได้เศร้านะแต่มันรู้สึกอยากรั้งเธอไว้  
-บางทีที่ร้องไห้เพราะเธอนอย  
-ก็เป็นเพราะกลัวว่าเธอจะทิ้งเค้าไป
-</p>
-
-<p>
-เพราะนิสัยของเค้าบางทีอาจจะหวงเธอเกินไป  
-คิดมากเกินไป  
-แม้กระทั่งรูปที่เปิดเห็นไหล่  
-ใจเค้าก็แทบจะขาดแล้ว
-</p>
-
-<p>
-เวลาเอาไปให้คนอื่นดูหรือลงสตอรี่  
-เค้าขอบอกนะรูปที่เปิดให้เห็นตั้งแต่ไหล่ลงมา  
-เค้าไม่ค่อยโอเคเท่าไหร่  
-แต่ถ้านานๆทีหรือเอามาถามก่อนก็ได้
-</p>
-
-<p>
-แต่ก็รู้สึกดีนะ  
-ที่เธอมีความมั่นใจในตัวเอง  
-จนกล้าลงรูปแบบนี้ได้
+ทุกครั้งที่เค้าร้องไห้เพราะเธอ มันไม่ใช่ความเศร้านะ  
+แต่มันคือความกลัวว่าจะเสียเธอไป  
+เค้าอาจจะหวง คิดมาก และใจแคบในบางเรื่อง  
+แต่ทั้งหมดมันเกิดจากคำว่า “รัก”
 </p>
 
 <p>
 ขอบคุณมากเลยนะที่อยู่ด้วยกันจนถึงตอนนี้  
-ขอให้มีเธอในปีต่อๆไป  
-และขอให้ปีหน้าเป็นปีที่ดีสำหรับเรานะ  
-ยิ้มเยอะๆนะ
+ขอให้มีเธอในปีต่อ ๆ ไป  
+ขอให้ปีหน้าเป็นปีที่ดีสำหรับเรานะ  
+ยิ้มเยอะ ๆ นะ
 </p>
 
 <p>
-ปีนี้ก็ไม่ได้แย่นะ  
-เพราะได้เจอคนคนนี้แล้ว  
-คนที่เค้าไว้ใจมากที่สุด  
-ไม่ขออะไรมาก  
-ขอแค่ได้อยู่กับเธอต่อไปแค่นี้ก็พอแล้ว
+🥳 ยินดีต้อนรับปี 2026 🥳  
+สุขสันต์วันปีใหม่นะ ขิมสุดที่รัก 💜🤍  
+จะรอวันที่เราได้นั่งมองฟ้าที่เต็มไปด้วยพลุด้วยกันในทุกปีนะ
 </p>
-
-<p class="highlight" style="text-align:center">
-🥳 ยินดีต้อนรับนะ 2026 🥳
-</p>
-
-<div class="footer">
-สุขสันต์วันปีใหม่นะ <strong>ขิมสุดที่รัก</strong> 😊<br>
-จะรอวันที่เราได้นั่งมองฟ้าที่เต็มไปด้วยพลุด้วยกันในทุกปีนะ 💜🤍
 </div>
-</div>
+
+<!-- YouTube Music -->
+<iframe id="yt"
+src="https://www.youtube.com/embed/7as_BTOh-Lg?controls=0&loop=1&playlist=7as_BTOh-Lg"
+allow="autoplay"
+style="position:fixed;width:1px;height:1px;opacity:0;pointer-events:none;">
+</iframe>
 
 <script>
+/* Hearts */
+const hearts=["💜","🤍"];
+function createHeart(){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerText=hearts[Math.floor(Math.random()*2)];
+    h.style.left=Math.random()*100+"vw";
+    h.style.fontSize=16+Math.random()*14+"px";
+    h.style.animationDuration=6+Math.random()*6+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),12000);
+}
+setInterval(createHeart,700);
+
+/* Open Letter */
 function openLetter(){
     const box=document.getElementById("envelopeBox");
     const letter=document.getElementById("letter");
+    const blur=document.getElementById("blurBg");
     const yt=document.getElementById("yt");
 
-    box.classList.add("open");
+    box.classList.add("hide");
     yt.src += "&autoplay=1";
 
-    setTimeout(()=>{letter.classList.add("show")},600);
+    setTimeout(()=>{
+        blur.classList.add("show");
+        letter.classList.add("show");
+    },600);
 }
 </script>
 
